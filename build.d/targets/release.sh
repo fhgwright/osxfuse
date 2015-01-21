@@ -81,8 +81,8 @@ function release_build
     build_target_invoke distribution build -s 10.5 -d 10.5 -c Release \
                                            --kext=10.5 --kext=10.6 --kext="10.7->10.6" --kext="10.8->10.6" --kext=10.9 --kext="10.10->10.9" \
                                            --macfuse \
-                                           --code-sign-identity="${BUILD_TARGET_OPTION_CODE_SIGN_IDENTITY}" \
-                                           --product-sign-identity="${BUILD_TARGET_OPTION_PRODUCT_SIGN_IDENTITY}"
+                                           ###--code-sign-identity="${BUILD_TARGET_OPTION_CODE_SIGN_IDENTITY}" \
+                                           ###--product-sign-identity="${BUILD_TARGET_OPTION_PRODUCT_SIGN_IDENTITY}"
     common_die_on_error "Failed to build distribution package"
 
     build_target_invoke distribution install --debug="${debug_directory}" "${BUILD_TARGET_BUILD_DIRECTORY}"
@@ -94,10 +94,10 @@ function release_build
 
     # Build property list signer
 
-    build_target_xcodebuild -project prefpane/autoinstaller/autoinstaller.xcodeproj -target plist_signer \
-                            ONLY_ACTIVE_ARCH="YES" \
-                            clean build
-    common_die_on_error "Failed to build property list signer"
+    ###build_target_xcodebuild -project prefpane/autoinstaller/autoinstaller.xcodeproj -target plist_signer \
+    ###                        ONLY_ACTIVE_ARCH="YES" \
+    ###                        clean build
+    ###common_die_on_error "Failed to build property list signer"
 
     # Create disk image
 
@@ -155,12 +155,12 @@ function release_build
 
     # Sign extras
 
-    local application_path=""
-    for application_path in "${disk_image_mount_point}/Extras"/*.app
-    do
-        build_target_codesign "${application_path}"
-        detach_die_on_error "Failed to sign resource '${application_path}'"
-    done
+    ###local application_path=""
+    ###for application_path in "${disk_image_mount_point}/Extras"/*.app
+    ###do
+        ###build_target_codesign "${application_path}"
+        ###detach_die_on_error "Failed to sign resource '${application_path}'"
+    ###done
 
     # Copy distribution package to disk image
 
@@ -324,12 +324,12 @@ EOF
 
     # Sign autoinstaller rules file
 
-    local plist_signer_path=""
-    plist_signer_path="`osxfuse_find "${BUILD_TARGET_BUILD_DIRECTORY}/plist_signer"`"
-    common_die_on_error "Failed to locate property list signer"
+    ###local plist_signer_path=""
+    ###plist_signer_path="`osxfuse_find "${BUILD_TARGET_BUILD_DIRECTORY}/plist_signer"`"
+    ###common_die_on_error "Failed to locate property list signer"
 
-    "${plist_signer_path}" --sign --key "${RELEASE_RULES_PLIST_PRIVATE_KEY_PATH}" "${rules_plist_path}" 1>&3 2>&4
-    common_die_on_error "Failed to sign autoinstaller rules file"
+    ###"${plist_signer_path}" --sign --key "${RELEASE_RULES_PLIST_PRIVATE_KEY_PATH}" "${rules_plist_path}" 1>&3 2>&4
+    ###common_die_on_error "Failed to sign autoinstaller rules file"
 
     # Archive debug information
 
